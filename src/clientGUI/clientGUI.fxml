@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="serverGUI.GuiController">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="800.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TextArea editable="false" layoutX="47.0" layoutY="51.0" prefHeight="616.0" prefWidth="537.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="40.0" />
+      <TextField editable="false" layoutX="20.0" layoutY="699.0" prefHeight="76.0" prefWidth="537.0" />
+      <TextArea editable="false" layoutX="576.0" layoutY="40.0" prefHeight="616.0" prefWidth="200.0" />
+      <Button layoutX="576.0" layoutY="699.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="200.0" text="Send" />
+      <Label alignment="TOP_LEFT" layoutX="20.0" layoutY="674.0" prefHeight="17.0" prefWidth="149.0" text="Chat text:" />
+   </children>
+</AnchorPane>
