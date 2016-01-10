@@ -11,16 +11,24 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class LoginSceneController {
+	// Load the fxml file and create a new stage for the popup
+	//FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/fxml/LoginScene.fxml"));
 	
 
+    @FXML // fx:id="subAnchorPane"
+    private AnchorPane subAnchorPane; // Value injected by FXMLLoader
+    
+    Stage loginStage;
+  	Scene scene;
+    
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -38,11 +46,26 @@ public class LoginSceneController {
 
     @FXML // fx:id="txtFldSrvPort"
     private TextField txtFldSrvPort; // Value injected by FXMLLoader
-
+    
+    //closes the login window after clicking on the login button
     @FXML
     void loginUser(ActionEvent event) {
+    		loginStage.close();
+    }
+    //opens the login window    
+    public void startLoginWindow() {
     	
-    		
+    	Stage loginStage = new Stage();
+    	try {
+			subAnchorPane = (AnchorPane)FXMLLoader.load(getClass().getResource("/fxml/LoginScene.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	Scene scene = new Scene(subAnchorPane);
+    	loginStage.setTitle("Please log in");
+    	loginStage.setScene(scene);
+    	loginStage.show(); 	
+    	
     }
     
 
