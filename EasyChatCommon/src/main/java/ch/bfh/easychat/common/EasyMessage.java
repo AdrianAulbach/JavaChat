@@ -28,18 +28,21 @@ public class EasyMessage {
     public EasyMessage(String message) {
         this.message = message;
     }
-    
+
     // For JSON see: https://github.com/ralfstx/minimal-json
-    
-    public String toJson(){
+    public String toJson() {
         JsonObject object = Json.object().add("message", message);
         return object.asString();
     }
-    
-    public static EasyMessage load(String json){
-        JsonObject object = Json.parse(json).asObject();
-        String message = object.get("message").asString();
-        
-        return new EasyMessage(message);
+
+    public static EasyMessage load(String json) {
+        try {
+            JsonObject object = Json.parse(json).asObject();
+            String message = object.get("message").asString();
+
+            return new EasyMessage(message);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
