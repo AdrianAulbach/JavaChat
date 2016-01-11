@@ -32,13 +32,13 @@ public class EasyMessage {
     // For JSON see: https://github.com/ralfstx/minimal-json
     public String toJson() {
         JsonObject object = Json.object().add("message", message);
-        return object.asString();
+        return object.toString();
     }
 
     public static EasyMessage load(String json) {
         try {
             JsonObject object = Json.parse(json).asObject();
-            String message = object.get("message").asString();
+            String message = object.get("message").toString();
 
             return new EasyMessage(message);
         } catch (Exception ex) {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ch.bfh.easychat.server;
+package ch.bfh.easychat.common;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

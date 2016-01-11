@@ -32,7 +32,7 @@ public class EasyRequest {
     // For JSON see: https://github.com/ralfstx/minimal-json
     public String toJson() {
         JsonObject object = Json.object().add("top", top);
-        return object.asString();
+        return object.toString();
     }
 
     public static EasyRequest load(String json) {
