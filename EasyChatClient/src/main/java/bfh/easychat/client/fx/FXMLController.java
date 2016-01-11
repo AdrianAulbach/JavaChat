@@ -1,4 +1,4 @@
-package ch.bfh.easychat.client;
+package bfh.easychat.client.fx;
 
 import java.net.URL;
 import java.util.ResourceBundle;

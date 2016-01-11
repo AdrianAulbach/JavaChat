@@ -1,10 +1,12 @@
-package ch.bfh.easychat.client;
+package bfh.easychat.client.fx;
 
+import bfh.easychat.client.core.ProtocolListener;
+import bfh.easychat.client.serverclient.ProtocolImpl;
 import java.util.Scanner;
 
 import ch.bfh.easychat.common.EasyMessage;
 
-public class EasyCli implements ProtocolObserver {
+public class EasyCli implements ProtocolListener {
 
 	public static void main(String args[]) {
 		(new EasyCli()).doStuff(args);
@@ -21,8 +23,8 @@ public class EasyCli implements ProtocolObserver {
 		port = scn.nextInt();
 		
 		System.out.println("Connecting ...");
-		EasyProtocol protocol = new EasyProtocol();
-		protocol.addObserver(this);
+		ProtocolImpl protocol = new ProtocolImpl();
+//		protocol.addProtocolListener(this);
 		if(protocol.connect(server, port, "test-user")) {
 			System.out.println("Connected");
 		} else {
@@ -39,7 +41,7 @@ public class EasyCli implements ProtocolObserver {
 		
 	}
 	
-	public void onMessageRecieved(EasyMessage msg) {
+	public void messageRecieved(EasyMessage msg) {
 		// TODO Auto-generated method stub
 		System.out.println(msg.getMessage());
 	}
