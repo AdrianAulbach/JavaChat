@@ -1,6 +1,7 @@
 package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class MessageProvider {
 
     /**
      * Returns all new messages that are not yet sent to the client.
-     * 
+     *
      * @return new messages
      */
     public EasyMessage[] fetch() {
@@ -48,14 +49,40 @@ public class MessageProvider {
         return messages;
     }
 
+    public boolean any() {
+        int size;
+        synchronized (LOCK_MESSAGE_SOURCE) {
+            size = messagesSource.size();
+        }
+        return currentMessagePointer < size;
+    }
+
     /**
      * Queues a message to be broadcasted.
-     * 
-     * @param message 
+     *
+     * @param message
      */
     public void broadcast(EasyMessage message) {
         synchronized (LOCK_MESSAGE_SOURCE) {
             messagesSource.add(message);
         }
+    }
+
+    /**
+     * Returns the last top messages.
+     * 
+     * @param top top of messages to retrieve
+     * @return an array with the last top messages
+     */
+    public EasyMessage[] queryTop(int top) {
+        EasyMessage[] messages;
+        synchronized (LOCK_MESSAGE_SOURCE) {
+            int size = messagesSource.size();
+            messages = new EasyMessage[Math.min(top, size)];
+            for (int i = 0; i < messages.length; i++) {
+                messages[i] = messagesSource.get(size - (i + 1));
+            }
+        }
+        return messages;
     }
 }

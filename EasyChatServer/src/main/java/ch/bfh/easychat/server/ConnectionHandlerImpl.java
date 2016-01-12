@@ -2,11 +2,14 @@ package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.server.core.ConnectionHandler;
-import java.io.BufferedReader;
+import com.eclipsesource.json.JsonArray;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,9 +17,12 @@ import java.net.Socket;
  */
 public class ConnectionHandlerImpl implements ConnectionHandler {
 
+    private final static String STREAM_ENCODING = "UTF-8";
+
     private Socket socket = null;
     private boolean shutdown = false;
     private final MessageProvider messageProvider;
+    private final List<InputFilter> streamHandler = new ArrayList<>();
 
     /**
      * The default constructor.
@@ -25,6 +31,8 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
      */
     public ConnectionHandlerImpl(MessageProvider messageProvider) {
         this.messageProvider = messageProvider;
+        streamHandler.add(new MessageFilter(messageProvider));
+        streamHandler.add(new RequestFilter(messageProvider));
     }
 
     /**
@@ -33,13 +41,64 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
     @Override
     public void handle(Socket socket) throws IOException {
         this.socket = socket;
-        try (
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));) {
-            handleInternal(in, out);
-        } finally {
-            shutdown();
+        OutputStream out = socket.getOutputStream();
+        InputStream in = socket.getInputStream();
+
+        handleInternal(in, out);
+        shutdown();
+    }
+
+    /**
+     * Implementation of the client-server protocol.
+     *
+     * @param in input stream
+     * @param out output stream
+     *
+     * @throws IOException
+     */
+    private void handleInternal(InputStream in, OutputStream out) throws IOException {
+        InputBuffer buffer = new InputBuffer();
+        
+        EasyMessage welcomeMessage = new EasyMessage("Willkommen im JavaChat.");
+        out.write(welcomeMessage.toJson().getBytes(STREAM_ENCODING));
+        out.flush();
+        
+        while (!shutdown) {
+            if (in.available() > 0) {
+                byte data = (byte) in.read();
+                if (data < 1) {
+                    continue;
+                }
+                buffer.buffer(data);
+            } else if (!buffer.isEmpty()) {
+                String line = buffer.asString(STREAM_ENCODING);
+                for (InputFilter filter : streamHandler) {
+                    String output = filter.filter(line);
+                    if (output.length() > 0) {
+                        out.write(output.getBytes(STREAM_ENCODING));
+                    }
+                }
+                out.flush();
+                buffer.reset();
+            } else {
+                broadcast(out);
+            }
+        }
+    }
+
+    private void broadcast(OutputStream out) throws UnsupportedEncodingException, IOException {
+        if (messageProvider.any()) {
+            EasyMessage[] messages;
+            messages = messageProvider.fetch();
+            if (messages.length > 0) {
+                JsonArray json = new JsonArray();
+                for (EasyMessage message : messages) {
+                    json.add(message.toJson());
+                }
+                byte[] output = json.toString().getBytes(STREAM_ENCODING);
+                out.write(output);
+                out.flush();
+            }
         }
     }
 
@@ -53,6 +112,8 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws java.io.IOException
      */
     @Override
     public void shutdown() throws IOException {
@@ -60,48 +121,6 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
             shutdown = true;
             if (socket != null) {
                 socket.close();
-            }
-        }
-    }
-
-    /**
-     * Implementation of the client-server protocol.
-     * 
-     * @param in input stream
-     * @param out output stream
-     * 
-     * @throws IOException 
-     */
-    private void handleInternal(BufferedReader in, PrintWriter out) throws IOException {
-        
-        /*
-        The basic pattern is as follows:
-        
-        while(!shutdown){
-            read input()
-            if(messages pending){
-                write messages()
-            }
-        }
-        */
-
-        String line = "";
-        while (!shutdown) {
-            if (in.ready()) {
-                int data = in.read();
-                if (data == 0) {
-                    continue;
-                }
-                line += (char) data;
-            } else if (!line.isEmpty()) {
-                messageProvider.broadcast(new EasyMessage(line));
-                line = "";
-            } else {
-                EasyMessage[] messages = messageProvider.fetch();
-                for (EasyMessage message : messages) {
-                    out.write(message.getMessage());
-                    out.flush();
-                }
             }
         }
     }
