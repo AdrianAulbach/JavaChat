@@ -1,5 +1,6 @@
 package ch.bfh.easychat.server;
 
+import ch.bfh.easychat.common.InputBuffer;
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.server.core.ConnectionHandler;
 import com.eclipsesource.json.JsonArray;

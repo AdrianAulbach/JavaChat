@@ -11,21 +11,22 @@ import ch.bfh.easychat.common.EasyMessage;
  *
  * @author Samuel
  */
-public class MessageFilter implements InputFilter{
+public class MessageFilter implements InputFilter {
 
     private final MessageProvider provider;
-    
-    public MessageFilter(MessageProvider provider){
+
+    public MessageFilter(MessageProvider provider) {
         this.provider = provider;
     }
-    
+
     @Override
     public String filter(String input) {
         EasyMessage message = EasyMessage.load(input);
-        if(message != null){
+        if (message != null) {
             provider.broadcast(message);
+            System.out.println("Received message; " + message.getMessage());
         }
-        
+
         return "";
     }
 }
