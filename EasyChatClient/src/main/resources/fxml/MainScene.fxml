@@ -7,13 +7,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="723.0" prefWidth="810.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="ch.bfh.easychat.client.FXMLController">
+<AnchorPane id="AnchorPane" fx:id="mainAnchorPane" prefHeight="723.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfh.easychat.client.fx.MainSceneController">
    <children>
       <BorderPane layoutX="190.0" layoutY="194.0" prefHeight="723.0" prefWidth="810.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <MenuBar BorderPane.alignment="CENTER">
               <menus>
-                <Menu mnemonicParsing="false" text="Connect" />
+                <Menu fx:id="connectBar" mnemonicParsing="false" text="Connect...">
+                     <items>
+                        <MenuItem fx:id="connectMenuitem" mnemonicParsing="false" onAction="#openLoginWindow" text="Connect to Server" />
+                     </items></Menu>
               </menus>
             </MenuBar>
          </top>
@@ -24,7 +27,7 @@
                      <children>
                         <BorderPane layoutX="53.0" layoutY="41.0" prefHeight="345.0" prefWidth="808.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <ListView fx:id="chatText" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
@@ -46,14 +49,14 @@
                      <children>
                         <BorderPane layoutX="167.0" layoutY="54.0" prefHeight="345.0" prefWidth="808.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <right>
-                              <Button maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefWidth="100.0" text="Button" BorderPane.alignment="CENTER">
+                              <Button fx:id="btnSendMsg" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#sendMessage" prefWidth="100.0" text="Send" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </BorderPane.margin>
                               </Button>
                            </right>
                            <center>
-                              <TextArea prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <TextArea fx:id="chatInputText" prefHeight="200.0" prefWidth="200.0" promptText="Please enter your text here after you logged in" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </BorderPane.margin>
