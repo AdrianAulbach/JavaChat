@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import bfh.easychat.client.serverclient.ProtocolImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class LoginSceneController {
+public class LoginSceneController extends ProtocolImpl{
 	
 	Stage loginStage;
   	Scene loginScene;
@@ -49,6 +50,15 @@ public class LoginSceneController {
     	
     	// get a handle to the stage
         Stage stage = (Stage) btnLogin.getScene().getWindow();
+        
+        //System.out.println(txtFldSrvName.getText()+"\n");
+        //System.out.println(txtFldSrvPort.getText()+"\n");
+        //System.out.println(txtFldUserName.getText()+"\n");
+        
+        connect(txtFldSrvName.getText(), Integer.parseInt(txtFldSrvPort.getText()), txtFldUserName.getText());
+        
+        
+        
         // do what you have to do
         stage.close();    
         
