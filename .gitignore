@@ -12,3 +12,8 @@
 hs_err_pid*
 
 https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
+EasyChatCommon/.classpath
+EasyChatCommon/.project
+EasyChatCommon/.settings/org.eclipse.core.resources.prefs
+EasyChatCommon/.settings/org.eclipse.jdt.core.prefs
+EasyChatCommon/.settings/org.eclipse.m2e.core.prefs
