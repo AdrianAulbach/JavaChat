@@ -5,6 +5,7 @@ import bfh.easychat.client.core.ProtocolListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.common.InputBuffer;
@@ -31,12 +32,13 @@ public class ProtocolImpl implements Protocol, Runnable {
 
                 EasyMessage easyMessage = new EasyMessage(message);
                 byte[] messageBytes = easyMessage.toJson().getBytes(STREAM_ENCODING);
-                byte[] output = new byte[messageBytes.length + 1];
-                output[output.length - 1] = 0;
+                //copying messageBytes to longer Array with 0 at the end
+                byte[] output = Arrays.copyOf(messageBytes, messageBytes.length + 1);
                 out.write(output);
                 out.flush();
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
+                System.out.println("SHIT");
                 return false;
             }
             return true;
