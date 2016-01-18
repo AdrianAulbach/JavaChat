@@ -1,7 +1,12 @@
 package ch.bfh.easychat.common;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  *
@@ -44,5 +49,17 @@ public class EasyMessage {
         } catch (Exception ex) {
             return null;
         }
+    }
+    
+    public static List<EasyMessage> loadFromArray(String json) {
+    	JsonArray array = Json.parse(json).asArray();
+    	List<EasyMessage> messages = new LinkedList<EasyMessage>();
+    	for(JsonValue obj : array) {
+    		EasyMessage msg = EasyMessage.load(obj.asString());
+    		if(msg != null) {
+    			messages.add(msg);
+    		}
+    	}
+    	return messages;
     }
 }
