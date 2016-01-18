@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.common.InputBuffer;
@@ -38,7 +39,6 @@ public class ProtocolImpl implements Protocol, Runnable {
                 out.flush();
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
-                System.out.println("SHIT");
                 return false;
             }
             return true;
@@ -94,16 +94,16 @@ public class ProtocolImpl implements Protocol, Runnable {
                 while (true) {
                     byte data = (byte) in.read();
                     buffer.buffer(data);
-                    if (in.available() == 0) {
+                    if (in.available() == 0 || data == 0) {
                         break;
                     }
                 }
 
                 if (!buffer.isEmpty()) {
                     String line = buffer.asString(STREAM_ENCODING);
-                    EasyMessage easyMessage = EasyMessage.load(line);
-                    if (easyMessage != null && listener != null) {
-                        listener.messageRecieved(easyMessage);
+                    List<EasyMessage> messages= EasyMessage.loadFromArray(line);
+                    for(EasyMessage msg : messages) {
+                    	this.listener.messageRecieved(msg);
                     }
                     buffer.reset();
                 }
