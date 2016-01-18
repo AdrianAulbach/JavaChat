@@ -13,6 +13,7 @@ public class EasyCli implements ProtocolListener {
 	}
 	
 	public void doStuff(String args[]) {
+		
 		String server;
 		int port;
 		Scanner scn = new Scanner(System.in);
@@ -24,21 +25,29 @@ public class EasyCli implements ProtocolListener {
 		
 		System.out.println("Connecting ...");
 		ProtocolImpl protocol = new ProtocolImpl();
-//		protocol.addProtocolListener(this);
+		protocol.setProtocolListener(this);
 		if(protocol.connect(server, port, "test-user")) {
 			System.out.println("Connected");
+			if(protocol.sendMessage("TEST")) {
+				System.out.println("Message should have been sent");
+			} else {
+				System.out.println("Failed");
+			}
 		} else {
 			System.out.println("asldjf");
 		}
-//		Thread t1 = new Thread(protocol);
-//		t1.start();
+		Thread t1 = new Thread(protocol);
+		t1.start();
 		while(true){
-			System.out.print(".");
-			System.out.flush();
+			String msg = scn.nextLine();
+			if(msg.equals("exit")) {
+				break;
+			}
+			protocol.sendMessage(msg);
 		}
 		
-//		scn.close();
-		
+		scn.close();
+		return;
 	}
 	
 	public void messageRecieved(EasyMessage msg) {
