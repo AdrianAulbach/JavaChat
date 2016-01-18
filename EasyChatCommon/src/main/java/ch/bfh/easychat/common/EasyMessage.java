@@ -52,14 +52,18 @@ public class EasyMessage {
     }
     
     public static List<EasyMessage> loadFromArray(String json) {
-    	JsonArray array = Json.parse(json).asArray();
+    	JsonValue value = Json.parse(json);
     	List<EasyMessage> messages = new LinkedList<EasyMessage>();
-    	for(JsonValue obj : array) {
-    		EasyMessage msg = EasyMessage.load(obj.asString());
-    		if(msg != null) {
-    			messages.add(msg);
-    		}
-    	}
+    	if(value.isArray()) {
+	    	for(JsonValue obj : value.asArray()) {
+	    		EasyMessage msg = EasyMessage.load(obj.toString());
+	    		if(msg != null) {
+	    			messages.add(msg);
+	    		}
+	    	}
+    	} else {
+			messages.add(EasyMessage.load(value.toString()));
+		}
     	return messages;
     }
 }
