@@ -15,6 +15,7 @@ import com.eclipsesource.json.JsonValue;
 public class EasyMessage {
 
     private String message;
+    private String sender;
 
     /**
      * @return the message
@@ -29,14 +30,31 @@ public class EasyMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+    
+    /**
+     * @return the sender
+     */
+    public String getSender() {
+        return sender;
+    }
 
-    public EasyMessage(String message) {
+    /**
+     * @param user the sender to set
+     */
+    public void setSender(String user) {
+        this.sender = user;
+    }
+    
+    public EasyMessage(String message, String sender) {
         this.message = message;
+        this.sender = sender;
     }
 
     // For JSON see: https://github.com/ralfstx/minimal-json
     public String toJson() {
-        JsonObject object = Json.object().add("message", message);
+        JsonObject object = Json.object()
+                .add("message", message)
+                .add("sender", sender);
         return object.toString();
     }
 
@@ -44,8 +62,9 @@ public class EasyMessage {
         try {
             JsonObject object = Json.parse(json).asObject();
             String message = object.get("message").toString();
+            String sender = object.get("sender").toString();
 
-            return new EasyMessage(message);
+            return new EasyMessage(message, sender);
         } catch (Exception ex) {
             return null;
         }
@@ -66,4 +85,5 @@ public class EasyMessage {
 		}
     	return messages;
     }
+
 }
