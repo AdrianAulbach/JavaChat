@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import bfh.easychat.client.serverclient.ProtocolImpl;
-import bfh.easychat.client.viewmodels.ConnectionViewModel;
+import bfh.easychat.client.viewmodel.ConnectionViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

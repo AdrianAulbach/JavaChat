@@ -8,8 +8,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import bfh.easychat.client.core.ProtocolListener;
-import bfh.easychat.client.viewmodels.ConnectionViewModel;
-import bfh.easychat.common.EasyMessage;
+import bfh.easychat.client.viewmodel.ConnectionViewModel;
+import ch.bfh.easychat.common.EasyMessage;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

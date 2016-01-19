@@ -2,7 +2,7 @@ package bfh.easychat.client.fx;
 
 import bfh.easychat.client.core.Protocol;
 import bfh.easychat.client.serverclient.ProtocolImpl;
-import bfh.easychat.client.viewmodels.ConnectionViewModel;
+import bfh.easychat.client.viewmodel.ConnectionViewModel;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
