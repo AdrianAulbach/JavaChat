@@ -57,7 +57,8 @@ public class ProtocolImpl implements Protocol, Runnable {
             LOGGER.log(Level.SEVERE, null, ex);
             return false;
         }
-
+//        Thread t1 = new Thread(this);
+//		t1.start();
         return true;
     }
 

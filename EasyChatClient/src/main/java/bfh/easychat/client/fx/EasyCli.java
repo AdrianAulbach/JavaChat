@@ -27,17 +27,13 @@ public class EasyCli implements ProtocolListener {
 		ProtocolImpl protocol = new ProtocolImpl();
 		protocol.setProtocolListener(this);
 		if(protocol.connect(server, port, "test-user")) {
+//			Thread t1 = new Thread(protocol);
+//			t1.start();
 			System.out.println("Connected");
-			if(protocol.sendMessage("TEST")) {
-				System.out.println("Message should have been sent");
-			} else {
-				System.out.println("Failed");
-			}
 		} else {
 			System.out.println("asldjf");
 		}
-		Thread t1 = new Thread(protocol);
-		t1.start();
+		
 		while(true){
 			String msg = scn.nextLine();
 			if(msg.equals("exit")) {
