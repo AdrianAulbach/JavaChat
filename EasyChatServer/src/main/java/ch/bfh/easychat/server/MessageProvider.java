@@ -1,7 +1,6 @@
 package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

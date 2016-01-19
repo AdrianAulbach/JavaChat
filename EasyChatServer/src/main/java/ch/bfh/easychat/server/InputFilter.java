@@ -1,6 +1,6 @@
 package ch.bfh.easychat.server;
 
-import java.io.OutputStream;
+import ch.bfh.easychat.server.core.PlainInput;
 
 /**
  *
@@ -8,5 +8,5 @@ import java.io.OutputStream;
  */
 public interface InputFilter {
     
-    String filter(String input);
+    String filter(PlainInput input);
 }

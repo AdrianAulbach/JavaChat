@@ -6,6 +6,7 @@
 package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
+import ch.bfh.easychat.server.core.PlainInput;
 
 /**
  *
@@ -20,11 +21,12 @@ public class MessageFilter implements InputFilter {
     }
 
     @Override
-    public String filter(String input) {
-        EasyMessage message = EasyMessage.load(input);
+    public String filter(PlainInput input) {
+        EasyMessage message = EasyMessage.load(input.getPainInput());
         if (message != null) {
             provider.broadcast(message);
             System.out.println("Received message; " + message.getMessage());
+            input.onHandled();
         }
 
         return "";

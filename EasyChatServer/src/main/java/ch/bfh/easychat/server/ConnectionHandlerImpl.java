@@ -3,6 +3,7 @@ package ch.bfh.easychat.server;
 import ch.bfh.easychat.common.InputBuffer;
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.server.core.ConnectionHandler;
+import ch.bfh.easychat.server.core.PlainInput;
 import com.eclipsesource.json.JsonArray;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,11 +60,11 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
      */
     private void handleInternal(InputStream in, OutputStream out) throws IOException {
         InputBuffer buffer = new InputBuffer();
-        
-        EasyMessage welcomeMessage = new EasyMessage("Willkommen im JavaChat.");
+
+        EasyMessage welcomeMessage = new EasyMessage("Willkommen im JavaChat.", "Server");
         out.write(welcomeMessage.toJson().getBytes(STREAM_ENCODING));
         out.flush();
-        
+
         while (!shutdown) {
             if (in.available() > 0) {
                 byte data = (byte) in.read();
@@ -72,12 +73,15 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
                 }
                 buffer.buffer(data);
             } else if (!buffer.isEmpty()) {
-                String line = buffer.asString(STREAM_ENCODING);
+                PlainInput plain = new PlainInput(buffer.asString(STREAM_ENCODING));
                 for (InputFilter filter : streamHandler) {
-                    String output = filter.filter(line);
+                    String output = filter.filter(plain);
                     if (output.length() > 0) {
                         out.write(output.getBytes(STREAM_ENCODING));
                     }
+                }
+                if (!plain.isHandled()) {
+                    System.out.println("Invalid client data: " + plain.getPainInput());
                 }
                 out.flush();
                 buffer.reset();
