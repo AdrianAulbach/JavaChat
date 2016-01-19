@@ -75,7 +75,7 @@ public class MainSceneController implements ProtocolListener {
     void sendMessage(ActionEvent event) {
 
         //create a new message object and add it to the Listview
-        EasyMessage mymsg = new EasyMessage("USERNAME: " + chatInputText.getText());
+        EasyMessage mymsg = new EasyMessage("USERNAME: " + chatInputText.getText(), "USERNAME");
         messages.add(mymsg.getMessage());
         chatText.setItems(messages);
         chatInputText.clear();

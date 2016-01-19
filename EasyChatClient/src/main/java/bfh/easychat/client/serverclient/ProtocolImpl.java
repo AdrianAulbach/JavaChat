@@ -31,7 +31,7 @@ public class ProtocolImpl implements Protocol, Runnable {
             try {
                 OutputStream out = new BufferedOutputStream(socket.getOutputStream());
 
-                EasyMessage easyMessage = new EasyMessage(message);
+                EasyMessage easyMessage = new EasyMessage(message, "asdf");//ToDo: change to user 
                 byte[] messageBytes = easyMessage.toJson().getBytes(STREAM_ENCODING);
                 //copying messageBytes to longer Array with 0 at the end
                 byte[] output = Arrays.copyOf(messageBytes, messageBytes.length + 1);
