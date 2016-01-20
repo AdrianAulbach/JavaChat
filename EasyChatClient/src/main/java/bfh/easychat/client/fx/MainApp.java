@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -35,6 +36,7 @@ public class MainApp extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Easy Chat Client");
+            primaryStage.getIcons().add(new Image("/pictures/bfhlogo.png"));
             primaryStage.show();
 
             MainSceneController controller = loader.getController();
@@ -54,6 +56,7 @@ public class MainApp extends Application {
             dialogStage.setTitle("Connect to a Server");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
+            dialogStage.getIcons().add(new Image("/pictures/bfhlogo.png"));
             Scene scene = new Scene(loginScene);
             dialogStage.setScene(scene);
 
