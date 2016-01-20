@@ -121,8 +121,12 @@ public class ProtocolImpl implements Protocol, Runnable {
                 if (!buffer.isEmpty()) {
                     String line = buffer.asString(STREAM_ENCODING);
                     List<EasyMessage> messages= EasyMessage.loadFromArray(line);
-                    for(EasyMessage msg : messages) {
-                    	this.listener.messageRecieved(msg);
+                    if(this.listener != null) {
+	                    for(EasyMessage msg : messages) {
+	                    	this.listener.messageRecieved(msg);
+	                    }
+                    } else {
+                    	LOGGER.log(Level.SEVERE, "No ProtocolListener set");
                     }
                     buffer.reset();
                 }
