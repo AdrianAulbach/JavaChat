@@ -46,7 +46,7 @@
                               </Button>
                            </right>
                            <center>
-                              <TextArea fx:id="chatInputText" prefHeight="200.0" prefWidth="200.0" promptText="Please enter your text here after you logged in" BorderPane.alignment="CENTER">
+                              <TextArea fx:id="chatInputText" prefHeight="200.0" prefWidth="200.0" promptText="Please enter your text here after you logged in" wrapText="true" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </BorderPane.margin>
