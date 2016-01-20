@@ -1,4 +1,4 @@
-package ch.bfh.easychat.server;
+package ch.bfh.easychat.server.core;
 
 import ch.bfh.easychat.server.core.PlainInput;
 

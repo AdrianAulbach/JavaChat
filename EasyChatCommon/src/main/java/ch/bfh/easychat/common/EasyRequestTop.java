@@ -7,7 +7,7 @@ import com.eclipsesource.json.JsonObject;
  *
  * @author Samuel Egger
  */
-public class EasyRequest {
+public class EasyRequestTop {
 
     private int top;
 
@@ -25,7 +25,7 @@ public class EasyRequest {
         this.top = top;
     }
 
-    public EasyRequest(int top) {
+    public EasyRequestTop(int top) {
         this.top = top;
     }
 
@@ -35,12 +35,12 @@ public class EasyRequest {
         return object.toString();
     }
 
-    public static EasyRequest load(String json) {
+    public static EasyRequestTop load(String json) {
         try {
             JsonObject object = Json.parse(json).asObject();
             int top = object.get("top").asInt();
 
-            return new EasyRequest(top);
+            return new EasyRequestTop(top);
         } catch (Exception ex) {
             return null;
         }
