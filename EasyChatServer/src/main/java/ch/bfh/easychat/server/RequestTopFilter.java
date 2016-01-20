@@ -36,7 +36,7 @@ public class RequestTopFilter implements InputFilter {
             JsonArray json = new JsonArray();
             
             for (EasyMessage message : messages) {
-                json.add(message.toJson());
+                json.add(message.toJsonObject());
             }
             
             input.onHandled();
