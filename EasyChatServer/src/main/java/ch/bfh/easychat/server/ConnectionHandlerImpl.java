@@ -41,6 +41,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
         this.messageProvider = messageProvider;
         streamHandler.add(new MessageFilter(messageProvider));
         streamHandler.add(new RequestTopFilter(messageProvider));
+        streamHandler.add(new RequestUntilFilter(messageProvider));
     }
 
     /**
