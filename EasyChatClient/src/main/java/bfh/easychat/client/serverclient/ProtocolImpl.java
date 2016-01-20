@@ -24,6 +24,7 @@ public class ProtocolImpl implements Protocol, Runnable {
     private ProtocolListener listener = null;
     private String user = "";
     private boolean shutdown = false;
+    private Thread thread;
 
     /**
      * Sends a message to the server
@@ -69,7 +70,8 @@ public class ProtocolImpl implements Protocol, Runnable {
             shutdown = false;
             this.user = user;
             socket = new Socket(host, port);
-            (new Thread(this)).start();
+            thread = new Thread(this);
+            thread.start();
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
             return false;
@@ -81,7 +83,8 @@ public class ProtocolImpl implements Protocol, Runnable {
      * Disconnects from the server
      */
     public void disconnect() {
-        if (socket != null && !socket.isClosed()) {
+        shutdown = true;
+    	if (socket != null && !socket.isClosed()) {
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -113,7 +116,6 @@ public class ProtocolImpl implements Protocol, Runnable {
 
         InputBuffer buffer = new InputBuffer();
         while (!shutdown) {
-
             try {
                 while (true) {
                     byte data = (byte) in.read();
@@ -143,6 +145,11 @@ public class ProtocolImpl implements Protocol, Runnable {
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
             }
-        }
+        } 
+        try {
+			thread.join();
+		} catch (InterruptedException e) {
+			LOGGER.log(Level.SEVERE, "Failed to join thread", e);
+		}
     }
 }
