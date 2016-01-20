@@ -13,7 +13,8 @@ import java.util.List;
 public class MessageProvider {
 
     private final static Object LOCK_MESSAGE_SOURCE = new Object();
-    private int currentMessagePointer = 0;
+    private int restoreCurrentMessagePointer;
+    private int currentMessagePointer;
     private final List<EasyMessage> messagesSource;
 
     /**
@@ -23,6 +24,14 @@ public class MessageProvider {
      */
     public MessageProvider(List<EasyMessage> messagesSource) {
         this.messagesSource = messagesSource;
+        
+        int size;
+        synchronized (LOCK_MESSAGE_SOURCE) {
+            size = messagesSource.size();
+        }
+        
+        currentMessagePointer = size;
+        restoreCurrentMessagePointer = currentMessagePointer;
     }
 
     /**
@@ -32,7 +41,8 @@ public class MessageProvider {
      */
     public EasyMessage[] fetch() {
         int size = messagesSource.size();
-
+        restoreCurrentMessagePointer = currentMessagePointer;
+        
         if (size == 0) {
             return new EasyMessage[0];
         }
@@ -48,6 +58,13 @@ public class MessageProvider {
         }
 
         return messages;
+    }
+    
+    /**
+     * Undo last fetch. Call if processing of the fetched messages failed.
+     */
+    public void rollback(){
+        currentMessagePointer = restoreCurrentMessagePointer;
     }
 
     /**

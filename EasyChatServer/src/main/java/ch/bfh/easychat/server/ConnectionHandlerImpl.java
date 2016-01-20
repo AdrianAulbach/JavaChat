@@ -11,7 +11,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -114,10 +116,17 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
                 for (EasyMessage message : messages) {
                     json.add(message.toJsonObject());
                 }
-                byte[] output = json.toString().getBytes(STREAM_ENCODING);
-                out.write(output);
-                out.write(0);
-                out.flush();
+                
+                byte[] payload = json.toString().getBytes(STREAM_ENCODING);
+                // protocol requires ending zero byte
+                byte[] data = Arrays.copyOf(payload, payload.length + 1);
+                
+                try {
+                    out.write(data);
+                    out.flush();
+                } catch (SocketException ex) {
+                    messageProvider.rollback();
+                }
             }
         }
     }
