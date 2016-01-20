@@ -25,7 +25,11 @@ public class ProtocolImpl implements Protocol, Runnable {
     private String user = "";
     private boolean shutdown = false;
 
-    @Override
+    /**
+     * Sends a message to the server
+     * @param String message the message to send
+     * @return true on success
+     */
     public boolean sendMessage(String message) {
         if (socket.isConnected() && !socket.isClosed()) {
             try {
@@ -46,7 +50,12 @@ public class ProtocolImpl implements Protocol, Runnable {
         return false;
     }
 
-    @Override
+    /**
+     * Connects to the server and starts the Thread that listens for new messages
+     * @param String host Server's host (IP, URL, localhost)
+     * @param int port Port on which the server is listening
+     * @param String user The username that will be added as sender
+     */
     public boolean connect(String host, int port, String user) {
         try {
             shutdown = false;
@@ -60,7 +69,9 @@ public class ProtocolImpl implements Protocol, Runnable {
         return true;
     }
 
-    @Override
+    /**
+     * Disconnects from the server
+     */
     public void disconnect() {
         if (socket != null && !socket.isClosed()) {
             try {
@@ -71,12 +82,18 @@ public class ProtocolImpl implements Protocol, Runnable {
         }
     }
 
-    @Override
+    /**
+     * Sets the listener that gets notified when a new message arrives
+     * @param ProtocolListener listener The listener to notify
+     */
     public void setProtocolListener(ProtocolListener listener) {
         this.listener = listener;
     }
 
-    @Override
+    /**
+     * Do not use this method
+     * Only to be used by class Thread
+     */
     public void run() {
         InputStream in;
         try {
@@ -96,7 +113,7 @@ public class ProtocolImpl implements Protocol, Runnable {
                     	break;
                     }
                     buffer.buffer(data);
-                    if (in.available() == 0 || data == 0) {
+                    if (in.available() == 0) {
                         break;
                     }
                 }
