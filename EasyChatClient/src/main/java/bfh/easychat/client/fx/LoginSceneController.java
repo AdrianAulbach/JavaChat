@@ -14,7 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class LoginSceneController extends ProtocolImpl {
+public class LoginSceneController {
 
     private Stage dialogStage;
     private boolean okClicked;
