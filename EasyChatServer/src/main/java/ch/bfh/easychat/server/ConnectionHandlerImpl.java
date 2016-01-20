@@ -1,10 +1,10 @@
 package ch.bfh.easychat.server;
 
+import ch.bfh.easychat.server.core.InputFilter;
 import ch.bfh.easychat.common.InputBuffer;
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.server.core.ConnectionHandler;
 import ch.bfh.easychat.server.core.PlainInput;
-import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,14 +13,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
+ * Default implementation of the ConnectionHandler interface.
  *
  * @author Samuel Egger
  */
 public class ConnectionHandlerImpl implements ConnectionHandler {
 
     private final static String STREAM_ENCODING = "UTF-8";
+    private final static String WELCOME_MESSAGE = "Willkommen im EasyChat.";
 
     private Socket socket = null;
     private boolean shutdown = false;
@@ -35,7 +38,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
     public ConnectionHandlerImpl(MessageProvider messageProvider) {
         this.messageProvider = messageProvider;
         streamHandler.add(new MessageFilter(messageProvider));
-        streamHandler.add(new RequestFilter(messageProvider));
+        streamHandler.add(new RequestTopFilter(messageProvider));
     }
 
     /**
@@ -62,7 +65,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
     private void handleInternal(InputStream in, OutputStream out) throws IOException {
         InputBuffer buffer = new InputBuffer();
 
-        EasyMessage welcomeMessage = new EasyMessage("Willkommen im JavaChat.", "Server");
+        EasyMessage welcomeMessage = new EasyMessage(WELCOME_MESSAGE, "Server");
         out.write(welcomeMessage.toJson().getBytes(STREAM_ENCODING));
         out.write(0);
         out.flush();
@@ -84,17 +87,25 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
                     }
                 }
                 if (!plain.isHandled()) {
-                    System.out.println("Invalid client data: " + plain.getPainInput());
+                    Server.LOGGER.log(Level.FINE, "Invalid client data: {0}", plain.getPainInput());
                 }
                 out.flush();
                 buffer.reset();
             } else {
-                broadcast(out);
+                fetchAndSend(out);
             }
         }
     }
 
-    private void broadcast(OutputStream out) throws UnsupportedEncodingException, IOException {
+    /**
+     * Fetches all new messages from the message provider and send them to the
+     * client.
+     *
+     * @param out output stream used to write the messages
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     */
+    private void fetchAndSend(OutputStream out) throws UnsupportedEncodingException, IOException {
         if (messageProvider.any()) {
             EasyMessage[] messages;
             messages = messageProvider.fetch();

@@ -1,10 +1,12 @@
 package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The message provider encapsulates a message source.
+ * The message provider encapsulates a message source and provides utilities to
+ * get and send messages.
  *
  * @author Samuel Egger
  */
@@ -15,7 +17,7 @@ public class MessageProvider {
     private final List<EasyMessage> messagesSource;
 
     /**
-     * The default constructor.
+     * Creates a new MessageProvider object.
      *
      * @param messagesSource the message source
      */
@@ -48,6 +50,11 @@ public class MessageProvider {
         return messages;
     }
 
+    /**
+     * Checks if there is any message not yet handled.
+     *
+     * @return true if there is any new message, otherwise false
+     */
     public boolean any() {
         int size;
         synchronized (LOCK_MESSAGE_SOURCE) {
@@ -59,17 +66,22 @@ public class MessageProvider {
     /**
      * Queues a message to be broadcasted.
      *
-     * @param message
+     * @param message message to broadcast
      */
     public void broadcast(EasyMessage message) {
         synchronized (LOCK_MESSAGE_SOURCE) {
+            // We simply use the actual index of the message as its id. But this
+            // might as well be any other unique number.
+            int size = messagesSource.size();
+            message.setId(size);
+
             messagesSource.add(message);
         }
     }
 
     /**
      * Returns the last top messages.
-     * 
+     *
      * @param top top of messages to retrieve
      * @return an array with the last top messages
      */
@@ -83,5 +95,29 @@ public class MessageProvider {
             }
         }
         return messages;
+    }
+
+    /**
+     * Returns all top messages until (exclusively!) the message with the
+     * specified id. The method returns maximal 100 messages.
+     *
+     * @param id
+     * @return all top messages until (exclusively!) the message with the
+     * specified id
+     */
+    public EasyMessage[] queryUntilId(long id) {
+        List<EasyMessage> messages = new ArrayList<>();
+        synchronized (LOCK_MESSAGE_SOURCE) {
+            for (int i = messagesSource.size() - 1; i <= messagesSource.size() - 101; i--) {
+                EasyMessage msg = messagesSource.get(i);
+                if (id == msg.getId()) {
+                    break;
+                }
+
+                messages.add(msg);
+            }
+        }
+
+        return messages.toArray(new EasyMessage[messages.size()]);
     }
 }

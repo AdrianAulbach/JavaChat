@@ -20,6 +20,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
+ * The Server class implements the server loop.
  *
  * @author Samuel Egger
  */
@@ -56,10 +57,10 @@ public class Server implements Runnable {
      * Abstract factory to create ConnectionHandler objects.
      */
     private final ConnectionHandlerFactory connectionHandlerFactory;
-    private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     /**
-     * The default constructor.
+     * Creates a new Server object.
      *
      * @param connectionHandlerFactory an implementation of the
      * ConnectionHandlerFactory interface.
@@ -167,7 +168,7 @@ public class Server implements Runnable {
         while (!shutdown) {
             final Socket socket;
             try {
-                LOGGER.log(Level.FINE, "Listening on port {0}...", 
+                LOGGER.log(Level.FINE, "Listening on port {0}...",
                         String.valueOf(serverSocket.getLocalPort()));
                 socket = accept();
                 if (socket == null) {

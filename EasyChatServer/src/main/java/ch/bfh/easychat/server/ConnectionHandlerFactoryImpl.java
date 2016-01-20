@@ -7,19 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Creates an instance of the ConnectionHandlerImpl class.
+ * 
  * @author Samuel Egger
  */
 public class ConnectionHandlerFactoryImpl implements ConnectionHandlerFactory {
 
-    private static final List<EasyMessage> messageSource = new ArrayList<>();
+    /**
+     * We simply use a static list as global message source.
+     */
+    private static final List<EasyMessage> MESSAGE_SOURCE = new ArrayList<>();
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ConnectionHandler create(Server server) {
-        MessageProvider provider = new MessageProvider(messageSource);
+        MessageProvider provider = new MessageProvider(MESSAGE_SOURCE);
         return new ConnectionHandlerImpl(provider);
     }
 }
