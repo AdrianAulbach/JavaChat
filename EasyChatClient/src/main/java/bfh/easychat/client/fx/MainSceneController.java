@@ -110,9 +110,9 @@ public class MainSceneController implements ProtocolListener {
         //if(!connectionModel.getUser().isEmpty()){
         //create a new message object and add it to the Listview
         //System.out.println(connectionModel.getUser());
-//        EasyMessage mymsg = new EasyMessage(chatInputText.getText(), connectionModel.getUser());
+        EasyMessage mymsg = new EasyMessage(chatInputText.getText(), connectionModel.getUser());
 //        messages.add(mymsg.getSender().toUpperCase() + ": " + mymsg.getMessage());
-        client.sendMessage(chatInputText.getText());
+        client.sendMessage(mymsg);
         chatInputText.clear();
         //}
     }

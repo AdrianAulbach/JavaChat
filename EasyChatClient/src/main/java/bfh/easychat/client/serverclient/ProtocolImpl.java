@@ -27,16 +27,14 @@ public class ProtocolImpl implements Protocol, Runnable {
 
     /**
      * Sends a message to the server
-     * @param String message the message to send
+     * @param EasyMessage message The message to send
      * @return true on success
      */
-    public boolean sendMessage(String message) {
+    public boolean sendMessage(EasyMessage message) {
         if (socket.isConnected() && !socket.isClosed()) {
             try {
                 OutputStream out = new BufferedOutputStream(socket.getOutputStream());
-
-                EasyMessage easyMessage = new EasyMessage(message, "asdf");//ToDo: change to user 
-                byte[] messageBytes = easyMessage.toJson().getBytes(STREAM_ENCODING);
+                byte[] messageBytes = message.toJson().getBytes(STREAM_ENCODING);
                 //copying messageBytes to longer Array with 0 at the end
                 byte[] output = Arrays.copyOf(messageBytes, messageBytes.length + 1);
                 out.write(output);
@@ -48,6 +46,16 @@ public class ProtocolImpl implements Protocol, Runnable {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Sends a message to the server
+     * @param String message the message to send
+     * @return true on success
+     */
+    public boolean sendMessage(String message) {
+        EasyMessage easyMessage = new EasyMessage(message, "asdf");//ToDo: change to user
+        return sendMessage(easyMessage);
     }
 
     /**
