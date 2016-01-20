@@ -16,7 +16,22 @@ public class EasyMessage {
 
     private String message;
     private String sender;
+    private long id;
 
+    /**
+     * @return the id
+     */
+    public long getId(){
+        return id;
+    }
+    
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id){
+        this.id = id;
+    }
+    
     /**
      * @return the message
      */
@@ -49,7 +64,17 @@ public class EasyMessage {
         this.message = message;
         this.sender = sender;
     }
+    
+    public EasyMessage(String message, String sender, long id) {
+        this.message = message;
+        this.sender = sender;
+        this.id = id;
+    }
 
+    public boolean hasId(){
+        return id > 0;
+    }
+    
     public String toJson() {
         return toJsonObject().toString();
     }
@@ -66,7 +91,11 @@ public class EasyMessage {
             String message = object.get("message").asString();
             String sender = object.get("sender").asString();
 
-            return new EasyMessage(message, sender);
+            long id = 0;
+            if(object.get("id") != null){
+                id = object.get("id").asLong();
+            }
+            return new EasyMessage(message, sender, id);
         } catch (Exception ex) {
             return null;
         }

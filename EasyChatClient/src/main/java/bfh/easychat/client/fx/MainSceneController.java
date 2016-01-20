@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -28,7 +29,6 @@ public class MainSceneController implements ProtocolListener {
     private final ObservableList<String> messages = FXCollections.observableArrayList();
     private MainApp mainApp = null;
     private ConnectionViewModel connectionModel = null;
-    
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -47,7 +47,7 @@ public class MainSceneController implements ProtocolListener {
 
     @FXML // fx:id="btnDisconnectFrom"
     private Button btnDisconnectFrom; // Value injected by FXMLLoader
-    
+
     @FXML // fx:id="chatText"
     private ListView<String> chatText; // Value injected by FXMLLoader
 
@@ -61,16 +61,13 @@ public class MainSceneController implements ProtocolListener {
     private MenuItem connectMenuitem;
 
     /**
-     * The setter is invoked by the MainApp to give access to its public 
+     * The setter is invoked by the MainApp to give access to its public
      * functions.
-     * 
-     * @param mainApp 
+     *
+     * @param mainApp
      */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
-        btnDisconnectFrom.setDisable(true);
-        btnSendMsg.setDisable(true);
-        chatText.setItems(messages);
     }
 
     /**
@@ -80,42 +77,66 @@ public class MainSceneController implements ProtocolListener {
      */
     public MainSceneController(Protocol client) {
         this.client = client;
+
+    }
+
+    @FXML
+    private void initialize() {
+        assert btnSendMsg != null : "fx:id=\"btnSendMsg\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert chatText != null : "fx:id=\"chatText\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert chatInputText != null : "fx:id=\"chatInputText\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert connectBar != null : "fx:id=\"connectBar\" was not injected: check your FXML file 'MainScene.fxml'.";
+
+        // configure controls
+        btnDisconnectFrom.setDisable(true);
+        btnSendMsg.setDisable(true);
+        chatText.setItems(messages);
+
+        chatText.setCellFactory((ListView<String> param) -> {
+            return new ListCell<String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    setWrapText(true);
+                    setText(item);
+                    super.updateItem(item, empty);
+                }
+            };
+        });
     }
 
     @FXML
     void handleSend(ActionEvent event) {
-    	//condition implementieren
-    	//if(!connectionModel.getUser().isEmpty()){
-    		//create a new message object and add it to the Listview
-    	//System.out.println(connectionModel.getUser());
-            EasyMessage mymsg = new EasyMessage(chatInputText.getText(), connectionModel.getUser());
-            messages.add(mymsg.getSender().toUpperCase() + ": " + mymsg.getMessage());
-            chatInputText.clear();
-	   	//}
+        //condition implementieren
+        //if(!connectionModel.getUser().isEmpty()){
+        //create a new message object and add it to the Listview
+        //System.out.println(connectionModel.getUser());
+        EasyMessage mymsg = new EasyMessage(chatInputText.getText(), connectionModel.getUser());
+        messages.add(mymsg.getSender().toUpperCase() + ": " + mymsg.getMessage());
+        chatInputText.clear();
+        //}
     }
 
     //starts the login GUI
     @FXML
     private void handleConnect(ActionEvent event) {
         connectionModel = new ConnectionViewModel();
-        if(mainApp.showConnectDialog(connectionModel)){
+        if (mainApp.showConnectDialog(connectionModel)) {
             boolean success = client.connect(connectionModel.getHost(), connectionModel.getPort(), connectionModel.getUser());
-            if(!success){
-            	messages.add("Connection to " + connectionModel.getHost() + ":" + connectionModel.getPort() + " failed.");
-            	btnConnectTo.setDisable(false);
-            	btnDisconnectFrom.setDisable(true);
-            	
-            }else{
-            	messages.add("Successfully connected to " + connectionModel.getHost() + ":" + connectionModel.getPort() + ".");
-            	btnConnectTo.setDisable(true);
-            	btnDisconnectFrom.setDisable(false);
-            	btnSendMsg.setDisable(false);
+            if (!success) {
+                messages.add("Connection to " + connectionModel.getHost() + ":" + connectionModel.getPort() + " failed.");
+                btnConnectTo.setDisable(false);
+                btnDisconnectFrom.setDisable(true);
+
+            } else {
+                messages.add("Successfully connected to " + connectionModel.getHost() + ":" + connectionModel.getPort() + ".");
+                btnConnectTo.setDisable(true);
+                btnDisconnectFrom.setDisable(false);
+                btnSendMsg.setDisable(false);
             }
-            
 
         }
     }
-    
+
     @FXML
     private void handleDisconnect(ActionEvent event) {
         client.disconnect();
@@ -123,23 +144,13 @@ public class MainSceneController implements ProtocolListener {
         btnDisconnectFrom.setDisable(true);
         btnSendMsg.setDisable(true);
         messages.add("Successfully disconnected from server");
-        
-
-        
-    }
-
-    @FXML // This method is called by the FXMLLoader when initialization is complete
-    private void initialize() {
-        assert btnSendMsg != null : "fx:id=\"btnSendMsg\" was not injected: check your FXML file 'MainScene.fxml'.";
-        assert chatText != null : "fx:id=\"chatText\" was not injected: check your FXML file 'MainScene.fxml'.";
-        assert chatInputText != null : "fx:id=\"chatInputText\" was not injected: check your FXML file 'MainScene.fxml'.";
-        assert connectBar != null : "fx:id=\"connectBar\" was not injected: check your FXML file 'MainScene.fxml'.";
 
     }
 
     private void displayMessage(EasyMessage msg) {
-        // your code here...
-        messages.add("USERNAME: " + msg.getMessage());
+        messages.add(String.format("{0}: {1}",
+                msg.getSender(),
+                msg.getMessage()));
     }
 
     @Override
