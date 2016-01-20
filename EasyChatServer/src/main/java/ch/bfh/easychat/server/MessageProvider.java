@@ -107,7 +107,7 @@ public class MessageProvider {
         synchronized (LOCK_MESSAGE_SOURCE) {
             int size = messagesSource.size();
             messages = new EasyMessage[Math.min(top, size)];
-            for (int i = 0; i < messages.length; i++) {
+            for (int i = messages.length - 1; i >= 0; i--) {
                 messages[i] = messagesSource.get(size - (i + 1));
             }
         }
