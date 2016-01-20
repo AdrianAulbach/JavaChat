@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="subAnchorPane" prefHeight="164.0" prefWidth="295.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfh.easychat.client.fx.LoginSceneController">
+<AnchorPane id="AnchorPane" fx:id="subAnchorPane" prefHeight="164.0" prefWidth="295.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfh.easychat.client.fx.LoginSceneController">
    <children>
       <GridPane layoutX="107.0" layoutY="134.0" prefHeight="160.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -55,8 +55,8 @@
             </Label>
             <AnchorPane prefWidth="295.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
                <children>
-                  <Button layoutX="183.0" layoutY="7.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleOk" prefWidth="100.0" text="Connect" />
-                  <Button layoutX="75.0" layoutY="7.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCancel" prefWidth="100.0" text="Cancel" />
+                  <Button fx:id="btnConnect" layoutX="183.0" layoutY="7.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleOk" prefWidth="100.0" text="Connect" />
+                  <Button fx:id="btnCancel" layoutX="75.0" layoutY="7.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCancel" prefWidth="100.0" text="Cancel" />
                </children>
             </AnchorPane>
          </children>

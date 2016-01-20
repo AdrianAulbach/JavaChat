@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="mainAnchorPane" prefHeight="723.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfh.easychat.client.fx.MainSceneController">
+<AnchorPane id="AnchorPane" fx:id="mainAnchorPane" prefHeight="723.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bfh.easychat.client.fx.MainSceneController">
    <children>
       <BorderPane layoutX="190.0" layoutY="194.0" prefHeight="723.0" prefWidth="810.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -39,7 +39,7 @@
                      <children>
                         <BorderPane layoutX="167.0" layoutY="54.0" prefHeight="345.0" prefWidth="808.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <right>
-                              <Button fx:id="btnSendMsg" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#sendMessage" prefWidth="100.0" text="Send" BorderPane.alignment="CENTER">
+                              <Button fx:id="btnSendMsg" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#handleSend" prefWidth="100.0" text="Send" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </BorderPane.margin>
@@ -61,12 +61,12 @@
          <top>
             <HBox prefWidth="810.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Connect">
+                  <Button fx:id="btnConnectTo" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleConnect" prefWidth="100.0" text="Connect">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="100.0" text="Disconnect">
+                  <Button fx:id="btnDisconnectFrom" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDisconnect" prefWidth="100.0" text="Disconnect">
                      <HBox.margin>
                         <Insets bottom="5.0" right="5.0" top="5.0" />
                      </HBox.margin>

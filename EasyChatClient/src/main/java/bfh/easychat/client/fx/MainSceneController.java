@@ -27,6 +27,8 @@ public class MainSceneController implements ProtocolListener {
     private final Protocol client;
     private final ObservableList<String> messages = FXCollections.observableArrayList();
     private MainApp mainApp = null;
+    private ConnectionViewModel connectionModel = null;
+    
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -40,6 +42,12 @@ public class MainSceneController implements ProtocolListener {
     @FXML // fx:id="btnSendMsg"
     private Button btnSendMsg; // Value injected by FXMLLoader
 
+    @FXML // fx:id="btnConnectTo"
+    private Button btnConnectTo; // Value injected by FXMLLoader
+
+    @FXML // fx:id="btnDisconnectFrom"
+    private Button btnDisconnectFrom; // Value injected by FXMLLoader
+    
     @FXML // fx:id="chatText"
     private ListView<String> chatText; // Value injected by FXMLLoader
 
@@ -60,6 +68,9 @@ public class MainSceneController implements ProtocolListener {
      */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+        btnDisconnectFrom.setDisable(true);
+        btnSendMsg.setDisable(true);
+        chatText.setItems(messages);
     }
 
     /**
@@ -72,22 +83,49 @@ public class MainSceneController implements ProtocolListener {
     }
 
     @FXML
-    void sendMessage(ActionEvent event) {
-
-        //create a new message object and add it to the Listview
-        EasyMessage mymsg = new EasyMessage("USERNAME: " + chatInputText.getText(), "USERNAME");
-        messages.add(mymsg.getMessage());
-        chatText.setItems(messages);
-        chatInputText.clear();
+    void handleSend(ActionEvent event) {
+    	//condition implementieren
+    	//if(!connectionModel.getUser().isEmpty()){
+    		//create a new message object and add it to the Listview
+    	//System.out.println(connectionModel.getUser());
+            EasyMessage mymsg = new EasyMessage(chatInputText.getText(), connectionModel.getUser());
+            messages.add(mymsg.getSender().toUpperCase() + ": " + mymsg.getMessage());
+            chatInputText.clear();
+	   	//}
     }
 
     //starts the login GUI
     @FXML
-    private void openLoginWindow(ActionEvent event) {
-        ConnectionViewModel model = new ConnectionViewModel();
-        if(mainApp.showConnectDialog(model)){
-            // TODO: Initiate connection
+    private void handleConnect(ActionEvent event) {
+        connectionModel = new ConnectionViewModel();
+        if(mainApp.showConnectDialog(connectionModel)){
+            boolean success = true; // client.connect(model.getHost(), model.getPort(), model.getUser());
+            if(!success){
+            	messages.add("Connection to " + connectionModel.getHost() + ":" + connectionModel.getPort() + " failed.");
+            	btnConnectTo.setDisable(false);
+            	btnDisconnectFrom.setDisable(true);
+            	
+            }else{
+            	messages.add("Successfully connected to " + connectionModel.getHost() + ":" + connectionModel.getPort() + ".");
+            	btnConnectTo.setDisable(true);
+            	btnDisconnectFrom.setDisable(false);
+            	btnSendMsg.setDisable(false);
+            }
+            
+
         }
+    }
+    
+    @FXML
+    private void handleDisconnect(ActionEvent event) {
+        client.disconnect();
+        btnConnectTo.setDisable(false);
+        btnDisconnectFrom.setDisable(true);
+        btnSendMsg.setDisable(true);
+        messages.add("Successfully disconnected from server");
+        
+
+        
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -102,7 +140,6 @@ public class MainSceneController implements ProtocolListener {
     private void displayMessage(EasyMessage msg) {
         // your code here...
         messages.add("USERNAME: " + msg.getMessage());
-        chatText.setItems(messages);
     }
 
     @Override

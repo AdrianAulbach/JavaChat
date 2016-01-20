@@ -28,8 +28,11 @@ public class LoginSceneController extends ProtocolImpl {
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
 
-    @FXML // fx:id="btnLogin"
-    private Button btnLogin; // Value injected by FXMLLoader
+    @FXML // fx:id="btnCancel"
+    private Button btnCancel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="btnConnect"
+    private Button btnConnect; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtFldSrvName"
     private TextField txtFldSrvName; // Value injected by FXMLLoader
@@ -88,7 +91,8 @@ public class LoginSceneController extends ProtocolImpl {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert btnLogin != null : "fx:id=\"btnLogin\" was not injected: check your FXML file 'LoginScene.fxml'.";
+    	assert btnCancel != null : "fx:id=\"btnCancel\" was not injected: check your FXML file 'LoginScene.fxml'.";
+        assert btnConnect != null : "fx:id=\"btnConnect\" was not injected: check your FXML file 'LoginScene.fxml'.";
         assert txtFldSrvName != null : "fx:id=\"txtFldSrvName\" was not injected: check your FXML file 'LoginScene.fxml'.";
         assert txtFldUserName != null : "fx:id=\"txtFldUserName\" was not injected: check your FXML file 'LoginScene.fxml'.";
         assert txtFldSrvPort != null : "fx:id=\"txtFldSrvPort\" was not injected: check your FXML file 'LoginScene.fxml'.";
