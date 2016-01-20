@@ -7,6 +7,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.eclipsesource.json.ParseException;
 
 /**
  *
@@ -102,8 +103,9 @@ public class EasyMessage {
     }
 
     public static List<EasyMessage> loadFromArray(String json) {
-        JsonValue value = Json.parse(json);
         List<EasyMessage> messages = new LinkedList<EasyMessage>();
+        try {
+        JsonValue value = Json.parse(json);
         if (value.isArray()) {
             for (JsonValue obj : value.asArray()) {
                 EasyMessage msg = EasyMessage.load(obj.toString());
@@ -113,6 +115,9 @@ public class EasyMessage {
             }
         } else {
             messages.add(EasyMessage.load(value.toString()));
+        }
+        } catch(ParseException e) {
+        	//ToDo
         }
         return messages;
     }

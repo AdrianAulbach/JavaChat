@@ -64,6 +64,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
 
         EasyMessage welcomeMessage = new EasyMessage("Willkommen im JavaChat.", "Server");
         out.write(welcomeMessage.toJson().getBytes(STREAM_ENCODING));
+        out.write(0);
         out.flush();
 
         while (!shutdown) {
@@ -79,6 +80,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
                     String output = filter.filter(plain);
                     if (output.length() > 0) {
                         out.write(output.getBytes(STREAM_ENCODING));
+                        out.write(0);
                     }
                 }
                 if (!plain.isHandled()) {
@@ -103,6 +105,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
                 }
                 byte[] output = json.toString().getBytes(STREAM_ENCODING);
                 out.write(output);
+                out.write(0);
                 out.flush();
             }
         }
