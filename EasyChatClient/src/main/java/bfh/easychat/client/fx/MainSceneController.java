@@ -99,7 +99,7 @@ public class MainSceneController implements ProtocolListener {
     private void handleConnect(ActionEvent event) {
         connectionModel = new ConnectionViewModel();
         if(mainApp.showConnectDialog(connectionModel)){
-            boolean success = true; // client.connect(model.getHost(), model.getPort(), model.getUser());
+            boolean success = client.connect(connectionModel.getHost(), connectionModel.getPort(), connectionModel.getUser());
             if(!success){
             	messages.add("Connection to " + connectionModel.getHost() + ":" + connectionModel.getPort() + " failed.");
             	btnConnectTo.setDisable(false);
