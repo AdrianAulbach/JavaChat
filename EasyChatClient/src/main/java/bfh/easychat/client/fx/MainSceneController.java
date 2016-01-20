@@ -77,7 +77,7 @@ public class MainSceneController implements ProtocolListener {
      */
     public MainSceneController(Protocol client) {
         this.client = client;
-
+        client.setProtocolListener(this);
     }
 
     @FXML
@@ -148,7 +148,7 @@ public class MainSceneController implements ProtocolListener {
     }
 
     private void displayMessage(EasyMessage msg) {
-        messages.add(String.format("{0}: {1}",
+        messages.add(String.format("{%s}: {%s}",
                 msg.getSender(),
                 msg.getMessage()));
     }
