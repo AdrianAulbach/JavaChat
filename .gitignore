@@ -17,3 +17,8 @@ EasyChatCommon/.project
 EasyChatCommon/.settings/org.eclipse.core.resources.prefs
 EasyChatCommon/.settings/org.eclipse.jdt.core.prefs
 EasyChatCommon/.settings/org.eclipse.m2e.core.prefs
+EasyChatServer/.classpath
+EasyChatServer/.project
+EasyChatServer/.settings/org.eclipse.core.resources.prefs
+EasyChatServer/.settings/org.eclipse.jdt.core.prefs
+EasyChatServer/.settings/org.eclipse.m2e.core.prefs

@@ -133,6 +133,10 @@ public class ProtocolImpl implements Protocol, Runnable {
                     List<EasyMessage> messages= EasyMessage.loadFromArray(line);
                     if(this.listener != null) {
 	                    for(EasyMessage msg : messages) {
+	                    	//Don't notify listener if message is from the user itself
+	                    	if(msg.getSender().equals(user)) {
+	                    		continue;
+	                    	}
 	                    	this.listener.messageRecieved(msg);
 	                    }
                     } else {
