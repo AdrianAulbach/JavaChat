@@ -4,6 +4,7 @@ import ch.bfh.easychat.common.InputBuffer;
 import ch.bfh.easychat.common.EasyMessage;
 import ch.bfh.easychat.server.core.ConnectionHandler;
 import ch.bfh.easychat.server.core.PlainInput;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class ConnectionHandlerImpl implements ConnectionHandler {
             if (messages.length > 0) {
                 JsonArray json = new JsonArray();
                 for (EasyMessage message : messages) {
-                    json.add(message.toJson());
+                    json.add(message.toJsonObject());
                 }
                 byte[] output = json.toString().getBytes(STREAM_ENCODING);
                 out.write(output);

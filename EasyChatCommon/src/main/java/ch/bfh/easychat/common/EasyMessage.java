@@ -30,7 +30,7 @@ public class EasyMessage {
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     /**
      * @return the sender
      */
@@ -44,46 +44,48 @@ public class EasyMessage {
     public void setSender(String user) {
         this.sender = user;
     }
-    
+
     public EasyMessage(String message, String sender) {
         this.message = message;
         this.sender = sender;
     }
 
-    // For JSON see: https://github.com/ralfstx/minimal-json
     public String toJson() {
-        JsonObject object = Json.object()
+        return toJsonObject().toString();
+    }
+
+    public JsonObject toJsonObject() {
+        return Json.object()
                 .add("message", message)
                 .add("sender", sender);
-        return object.toString();
     }
 
     public static EasyMessage load(String json) {
         try {
             JsonObject object = Json.parse(json).asObject();
-            String message = object.get("message").toString();
-            String sender = object.get("sender").toString();
+            String message = object.get("message").asString();
+            String sender = object.get("sender").asString();
 
             return new EasyMessage(message, sender);
         } catch (Exception ex) {
             return null;
         }
     }
-    
+
     public static List<EasyMessage> loadFromArray(String json) {
-    	JsonValue value = Json.parse(json);
-    	List<EasyMessage> messages = new LinkedList<EasyMessage>();
-    	if(value.isArray()) {
-	    	for(JsonValue obj : value.asArray()) {
-	    		EasyMessage msg = EasyMessage.load(obj.toString());
-	    		if(msg != null) {
-	    			messages.add(msg);
-	    		}
-	    	}
-    	} else {
-			messages.add(EasyMessage.load(value.toString()));
-		}
-    	return messages;
+        JsonValue value = Json.parse(json);
+        List<EasyMessage> messages = new LinkedList<EasyMessage>();
+        if (value.isArray()) {
+            for (JsonValue obj : value.asArray()) {
+                EasyMessage msg = EasyMessage.load(obj.toString());
+                if (msg != null) {
+                    messages.add(msg);
+                }
+            }
+        } else {
+            messages.add(EasyMessage.load(value.toString()));
+        }
+        return messages;
     }
 
 }
