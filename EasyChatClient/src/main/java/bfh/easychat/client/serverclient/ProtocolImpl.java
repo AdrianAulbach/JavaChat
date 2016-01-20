@@ -54,7 +54,7 @@ public class ProtocolImpl implements Protocol, Runnable {
      * @return true on success
      */
     public boolean sendMessage(String message) {
-        EasyMessage easyMessage = new EasyMessage(message, "asdf");//ToDo: change to user
+        EasyMessage easyMessage = new EasyMessage(message, user);
         return sendMessage(easyMessage);
     }
 
