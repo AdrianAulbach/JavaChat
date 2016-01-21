@@ -221,10 +221,8 @@ public class ProtocolImpl implements Protocol, Runnable {
      * Notifys the listener/GUI that the connection was lost
      */
     private void connectionErrorHandler() {
-//    	if(socket.isClosed()) {
-    		shutdown = true;
-    		if(listener != null)
-    			listener.connectionLost();
-//    	}
+		shutdown = true;
+		if(listener != null)
+			listener.connectionLost();
     }
 }
