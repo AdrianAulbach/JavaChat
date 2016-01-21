@@ -45,20 +45,27 @@ public class ProtocolImpl implements Protocol, Runnable {
      * @return true on success
      */
     private boolean sendData(byte[] data) {
-        if (socket.isConnected() && !socket.isClosed()) {
+        if (socket.isConnected() && !socket.isClosed() && !socket.isOutputShutdown()) {
             try {
             	OutputStream out = new BufferedOutputStream(socket.getOutputStream());
                 //copying data to longer Array with 0 at the end
                 byte[] output = Arrays.copyOf(data, data.length + 1);
                 out.write(output);
                 out.flush();
+                
+                //Socket exception comes first at second out.write(); out.flush;
+                //So this is to provoke the exception in case of a lost connection
+                out.write(0);
+                out.flush();
             } catch (SocketException ex) {
             	connectionErrorHandler();
+            	return false;
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
                 connectionErrorHandler();
                 return false;
             }
+            
             return true;
         }
         connectionErrorHandler();
