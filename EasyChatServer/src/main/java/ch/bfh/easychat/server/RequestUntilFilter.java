@@ -36,7 +36,7 @@ public class RequestUntilFilter implements InputFilter {
     public String filter(PlainInput input) {
         EasyRequestUntil request = EasyRequestUntil.load(input.getPainInput());
 
-        if (request != null && request.getUntilId() > 0) {
+        if (request != null && request.getUntilId() >= 0) {
             EasyMessage[] messages = provider.queryUntilId(request.getUntilId());
             JsonArray json = new JsonArray();
 

@@ -2,6 +2,7 @@ package ch.bfh.easychat.server;
 
 import ch.bfh.easychat.common.EasyMessage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -106,9 +107,10 @@ public class MessageProvider {
         EasyMessage[] messages;
         synchronized (LOCK_MESSAGE_SOURCE) {
             int size = messagesSource.size();
-            messages = new EasyMessage[Math.min(top, size)];
-            for (int i = messages.length - 1; i >= 0; i--) {
-                messages[i] = messagesSource.get(size - (i + 1));
+            int num = Math.min(size, top);
+            messages = new EasyMessage[num];
+            for(int i = 0; i < num; i++){
+                messages[i] = messagesSource.get(size - num + i);
             }
         }
         return messages;
@@ -125,16 +127,16 @@ public class MessageProvider {
     public EasyMessage[] queryUntilId(long id) {
         List<EasyMessage> messages = new ArrayList<>();
         synchronized (LOCK_MESSAGE_SOURCE) {
-            for (int i = messagesSource.size() - 1; i <= messagesSource.size() - 101; i--) {
-                EasyMessage msg = messagesSource.get(i);
+            int size = messagesSource.size();
+            for (int i = 0; i < size; i++) {
+                EasyMessage msg = messagesSource.get(size - (i + 1));
                 if (id == msg.getId()) {
                     break;
                 }
-
                 messages.add(msg);
             }
         }
-
+        Collections.reverse(messages);
         return messages.toArray(new EasyMessage[messages.size()]);
     }
 }
