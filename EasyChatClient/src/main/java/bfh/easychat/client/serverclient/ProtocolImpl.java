@@ -19,6 +19,11 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Handles the communication between the GUI and the server
+ * @author Adrian Aulbach
+ *
+ */
 public class ProtocolImpl implements Protocol, Runnable {
 
     private final static String STREAM_ENCODING = "UTF-8";
@@ -89,6 +94,7 @@ public class ProtocolImpl implements Protocol, Runnable {
      * @param String host Server's host (IP, URL, localhost)
      * @param int port Port on which the server is listening
      * @param String user The username that will be added as sender
+     * @return true on success
      */
     public boolean connect(String host, int port, String user) {
         try {
@@ -203,6 +209,10 @@ public class ProtocolImpl implements Protocol, Runnable {
 		}
     }
     
+    /**
+     * To be called whenever the connection to the server unexpectedly breaks down
+     * Notifys the listener/GUI that the connection was lost
+     */
     private void connectionErrorHandler() {
 //    	if(socket.isClosed()) {
     		shutdown = true;
