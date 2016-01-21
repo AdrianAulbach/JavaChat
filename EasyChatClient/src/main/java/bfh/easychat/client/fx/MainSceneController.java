@@ -30,11 +30,11 @@ public class MainSceneController implements ProtocolListener {
     @FXML
     private Button btnDisconnectFrom;
     @FXML
+    private Button btnReconnect;
+    @FXML
     private ListView<String> chatText;
     @FXML
     private TextArea chatInputText;
-    @FXML
-    private Menu connectBar;
 
     /**
      * The setter is invoked by the MainApp to give access to its public
@@ -64,12 +64,15 @@ public class MainSceneController implements ProtocolListener {
         assert btnSendMsg != null : "fx:id=\"btnSendMsg\" was not injected: check your FXML file 'MainScene.fxml'.";
         assert chatText != null : "fx:id=\"chatText\" was not injected: check your FXML file 'MainScene.fxml'.";
         assert chatInputText != null : "fx:id=\"chatInputText\" was not injected: check your FXML file 'MainScene.fxml'.";
-        assert connectBar != null : "fx:id=\"connectBar\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert btnReconnect != null : "fx:id=\"btnReconnect\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert btnDisconnectFrom != null : "fx:id=\"btnDisconnectFrom\" was not injected: check your FXML file 'MainScene.fxml'.";
+        assert btnConnectTo != null : "fx:id=\"btnDisconnectFrom\" was not injected: check your FXML file 'MainScene.fxml'.";
 
         // configure controls
         btnDisconnectFrom.setDisable(true);
         btnSendMsg.setDisable(true);
         chatInputText.setDisable(true);
+        btnReconnect.setVisible(false);
 
         chatText.setCellFactory((ListView<String> param) -> {
             return new ListCell<String>() {
@@ -104,19 +107,20 @@ public class MainSceneController implements ProtocolListener {
     private void handleConnect(ActionEvent event) {
         connectionModel = new ConnectionViewModel();
         if (mainApp.showConnectDialog(connectionModel)) {
+            btnReconnect.setVisible(false);
             boolean success = client.connect(
-                    connectionModel.getHost(), 
-                    connectionModel.getPort(), 
+                    connectionModel.getHost(),
+                    connectionModel.getPort(),
                     connectionModel.getUser());
             if (!success) {
                 messages.clear();
-                messages.add("Connection to " + connectionModel.getHost() + ":" 
+                messages.add("Connection to " + connectionModel.getHost() + ":"
                         + connectionModel.getPort() + " failed.");
                 btnConnectTo.setDisable(false);
                 btnDisconnectFrom.setDisable(true);
                 chatInputText.setDisable(true);
             } else {
-                messages.add("Successfully connected to " + connectionModel.getHost() + ":" 
+                messages.add("Successfully connected to " + connectionModel.getHost() + ":"
                         + connectionModel.getPort() + ".");
                 btnConnectTo.setDisable(true);
                 btnDisconnectFrom.setDisable(false);
@@ -143,6 +147,34 @@ public class MainSceneController implements ProtocolListener {
     }
 
     /**
+     * Try reconnect to the server.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleReconnect(ActionEvent event) {
+        if(connectionModel == null){
+            return;
+        }
+        
+        if (client.connect(connectionModel.getHost(), connectionModel.getPort(), connectionModel.getUser())) {
+            btnReconnect.setVisible(false);
+            btnConnectTo.setDisable(true);
+            btnDisconnectFrom.setDisable(false);
+            messages.add("Reconnect successfull.");
+        }else{
+            messages.add("Reconnect failed.");
+        }
+    }
+
+    /**
+     * Handles the connection lost event from the Protocol.
+     */
+    private void handleConnectionLost() {
+        btnReconnect.setVisible(true);
+    }
+
+    /**
      * Show chat message.
      *
      * @param msg the chat message to show
@@ -161,5 +193,13 @@ public class MainSceneController implements ProtocolListener {
     @Override
     public void messageRecieved(EasyMessage msg) {
         Platform.runLater(() -> displayMessage(msg));
+    }
+
+    /**
+     * Invoked by the Protocol when the connection to the server was lost.
+     */
+    @Override
+    public void connectionLost() {
+        Platform.runLater(() -> handleConnectionLost());
     }
 }

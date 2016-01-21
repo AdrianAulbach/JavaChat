@@ -71,7 +71,12 @@
                         </Button>
                         <Button fx:id="btnDisconnectFrom" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDisconnect" prefWidth="100.0" text="Disconnect">
                            <HBox.margin>
-                              <Insets bottom="5.0" right="5.0" top="5.0" />
+                              <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnReconnect" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDisconnect" prefWidth="100.0" text="Reconnect">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="7.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </Button>
                      </children>
