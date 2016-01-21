@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +33,12 @@ public class ProtocolImpl implements Protocol, Runnable {
     private boolean shutdown = false;
     private Thread thread;
     
+    /**
+     * Sends a any kind of data to the server.
+     * Adds a NULL byte at the end of the transmission to fulfill the communication protocol
+     * @param data byte array of the data to send to the server. NULL byte at the end NOT required, since it's added automatically.
+     * @return true on success
+     */
     private boolean sendData(byte[] data) {
         if (socket.isConnected() && !socket.isClosed()) {
             try {
@@ -40,12 +47,16 @@ public class ProtocolImpl implements Protocol, Runnable {
                 byte[] output = Arrays.copyOf(data, data.length + 1);
                 out.write(output);
                 out.flush();
+            } catch (SocketException ex) {
+            	connectionErrorHandler();
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
+                connectionErrorHandler();
                 return false;
             }
             return true;
         }
+        connectionErrorHandler();
         return false;
     }
 
@@ -111,6 +122,7 @@ public class ProtocolImpl implements Protocol, Runnable {
      */
     public void disconnect() {
         shutdown = true;
+        lastMessageID = -1;
     	if (socket != null && !socket.isClosed()) {
             try {
                 socket.close();
@@ -146,7 +158,7 @@ public class ProtocolImpl implements Protocol, Runnable {
             try {
                 while (true) {
                     byte data = (byte) in.read();
-                    if(data == 0) {
+                    if(data < 5) {
                     	break;
                     }
                     buffer.buffer(data);
@@ -174,7 +186,14 @@ public class ProtocolImpl implements Protocol, Runnable {
             } catch (IOException ex) {
                 if (!shutdown) {
                     LOGGER.log(Level.SEVERE, null, ex);
+                    if(listener != null) {
+                    	listener.connectionLost();
+                    }
+                    shutdown = true;
                 }
+            }
+            if(socket.isClosed() && !shutdown) {
+            	connectionErrorHandler();
             }
         } 
         try {
@@ -182,5 +201,13 @@ public class ProtocolImpl implements Protocol, Runnable {
 		} catch (InterruptedException e) {
 			LOGGER.log(Level.SEVERE, "Failed to join thread", e);
 		}
+    }
+    
+    private void connectionErrorHandler() {
+//    	if(socket.isClosed()) {
+    		shutdown = true;
+    		if(listener != null)
+    			listener.connectionLost();
+//    	}
     }
 }
