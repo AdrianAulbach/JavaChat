@@ -64,6 +64,7 @@ public class MainApp extends Application {
             dialogStage.getIcons().add(new Image("/pictures/bfhlogo.png"));
             Scene scene = new Scene(loginScene);
             dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
 
             LoginSceneController controller = loader.getController();
             controller.setDialogStage(dialogStage);

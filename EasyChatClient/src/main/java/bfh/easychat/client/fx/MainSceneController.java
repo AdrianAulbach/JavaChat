@@ -1,11 +1,6 @@
-/**
- * Sample Skeleton for 'MainScene.fxml' Controller Class
- */
 package bfh.easychat.client.fx;
 
 import bfh.easychat.client.core.Protocol;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import bfh.easychat.client.core.ProtocolListener;
 import bfh.easychat.client.viewmodel.ConnectionViewModel;
@@ -14,18 +9,12 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
 
 public class MainSceneController implements ProtocolListener {
 
@@ -34,35 +23,18 @@ public class MainSceneController implements ProtocolListener {
     private MainApp mainApp = null;
     private ConnectionViewModel connectionModel = null;
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
-
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
-
-    @FXML // fx:id="MainAnchorPane"
-    private AnchorPane mainAnchorPane; // Value injected by FXMLLoader
-
-    @FXML // fx:id="btnSendMsg"
-    private Button btnSendMsg; // Value injected by FXMLLoader
-
-    @FXML // fx:id="btnConnectTo"
-    private Button btnConnectTo; // Value injected by FXMLLoader
-
-    @FXML // fx:id="btnDisconnectFrom"
-    private Button btnDisconnectFrom; // Value injected by FXMLLoader
-
-    @FXML // fx:id="chatText"
-    private ListView<String> chatText; // Value injected by FXMLLoader
-
-    @FXML // fx:id="chatInputText"
-    private TextArea chatInputText; // Value injected by FXMLLoader
-
-    @FXML // fx:id="connectBar"
-    private Menu connectBar; // Value injected by FXMLLoader
-
     @FXML
-    private MenuItem connectMenuitem;
+    private Button btnSendMsg;
+    @FXML
+    private Button btnConnectTo;
+    @FXML
+    private Button btnDisconnectFrom;
+    @FXML
+    private ListView<String> chatText;
+    @FXML
+    private TextArea chatInputText;
+    @FXML
+    private Menu connectBar;
 
     /**
      * The setter is invoked by the MainApp to give access to its public
@@ -84,6 +56,9 @@ public class MainSceneController implements ProtocolListener {
         client.setProtocolListener(this);
     }
 
+    /**
+     * This method is called by the FXMLLoader when initialization is complete.
+     */
     @FXML
     private void initialize() {
         assert btnSendMsg != null : "fx:id=\"btnSendMsg\" was not injected: check your FXML file 'MainScene.fxml'.";
@@ -94,7 +69,7 @@ public class MainSceneController implements ProtocolListener {
         // configure controls
         btnDisconnectFrom.setDisable(true);
         btnSendMsg.setDisable(true);
-        chatText.setItems(messages);
+        chatInputText.setDisable(true);
 
         chatText.setCellFactory((ListView<String> param) -> {
             return new ListCell<String>() {
@@ -107,11 +82,7 @@ public class MainSceneController implements ProtocolListener {
             };
         });
 
-        chatInputText.setOnKeyPressed((KeyEvent ke) -> {
-            if (ke.getCode().equals(KeyCode.ENTER)) {
-                handleSend(null);
-            }
-        });
+        chatText.setItems(messages);
     }
 
     @FXML
@@ -124,43 +95,69 @@ public class MainSceneController implements ProtocolListener {
         chatInputText.clear();
     }
 
-    //starts the login GUI
+    /**
+     * Open the login dialog and connect to the server.
+     *
+     * @param event
+     */
     @FXML
     private void handleConnect(ActionEvent event) {
         connectionModel = new ConnectionViewModel();
         if (mainApp.showConnectDialog(connectionModel)) {
-            boolean success = client.connect(connectionModel.getHost(), connectionModel.getPort(), connectionModel.getUser());
+            boolean success = client.connect(
+                    connectionModel.getHost(), 
+                    connectionModel.getPort(), 
+                    connectionModel.getUser());
             if (!success) {
-                messages.add("Connection to " + connectionModel.getHost() + ":" + connectionModel.getPort() + " failed.");
+                messages.clear();
+                messages.add("Connection to " + connectionModel.getHost() + ":" 
+                        + connectionModel.getPort() + " failed.");
                 btnConnectTo.setDisable(false);
                 btnDisconnectFrom.setDisable(true);
-
+                chatInputText.setDisable(true);
             } else {
-                messages.add("Successfully connected to " + connectionModel.getHost() + ":" + connectionModel.getPort() + ".");
+                messages.add("Successfully connected to " + connectionModel.getHost() + ":" 
+                        + connectionModel.getPort() + ".");
                 btnConnectTo.setDisable(true);
                 btnDisconnectFrom.setDisable(false);
                 btnSendMsg.setDisable(false);
+                chatInputText.setDisable(false);
             }
-
         }
     }
 
+    /**
+     * Disconnect from the server.
+     *
+     * @param event
+     */
     @FXML
     private void handleDisconnect(ActionEvent event) {
         client.disconnect();
         btnConnectTo.setDisable(false);
         btnDisconnectFrom.setDisable(true);
         btnSendMsg.setDisable(true);
+        chatInputText.setDisable(true);
+        messages.clear();
         messages.add("Successfully disconnected from server");
-
     }
 
+    /**
+     * Show chat message.
+     *
+     * @param msg the chat message to show
+     */
     private void displayMessage(EasyMessage msg) {
         messages.add(String.format("%s: %s",
                 msg.getSender(),
                 msg.getMessage()));
     }
 
+    /**
+     * Invoked by the Protocol when a message was received.
+     *
+     * @param msg
+     */
     @Override
     public void messageRecieved(EasyMessage msg) {
         Platform.runLater(() -> displayMessage(msg));
