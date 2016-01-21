@@ -46,6 +46,11 @@ public class MainApp extends Application {
         }
     }
 
+    @Override
+    public void stop(){
+        CLIENT.disconnect();
+    }
+    
     public boolean showConnectDialog(ConnectionViewModel model) {
         try {
             FXMLLoader loader = new FXMLLoader();
